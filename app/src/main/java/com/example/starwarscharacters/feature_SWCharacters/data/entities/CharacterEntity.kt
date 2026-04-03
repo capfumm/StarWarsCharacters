@@ -1,0 +1,19 @@
+package com.example.starwarscharacters.feature_SWCharacters.data.entities
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity (tableName = "characters")
+data class CharacterEntity(
+
+	@PrimaryKey
+	val id: Long,
+	val avatarUrl: String?,
+	val name: String?,
+	val height: String?,
+	val mass: String?,
+	val hair: String?,
+	val eyes: String?,
+	val birthYear: String?,
+	val gender: String?,
+)
