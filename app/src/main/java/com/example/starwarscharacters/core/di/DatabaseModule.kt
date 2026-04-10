@@ -2,8 +2,7 @@ package com.example.starwarscharacters.core.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.RoomDatabase
-import com.example.starwarscharacters.feature_SWCharacters.data.dao.CharactersDao
+import com.example.starwarscharacters.feature_SWCharacters.data.dao.AppDao
 import com.example.starwarscharacters.feature_SWCharacters.data.database.AppDatabase
 import dagger.Module
 import dagger.Provides
@@ -23,10 +22,12 @@ object DatabaseModule {
 			context = context,
 			klass = AppDatabase::class.java,
 			name = "characters_database"
-		).build()
+		)
+			.fallbackToDestructiveMigration()
+			.build()
 	}
 
 	@Provides
 	@Singleton
-	fun provideDao(database: AppDatabase): CharactersDao = database.charactersDao()
+	fun provideDao(database: AppDatabase): AppDao = database.provideAppDao()
 }

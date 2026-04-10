@@ -8,6 +8,6 @@ sealed interface ListScreenUiState {
 		val items: List<Character>,
 		val isRefreshing: Boolean = false
 	): ListScreenUiState
-	data class Empty(val message: String?): ListScreenUiState
+	object Empty: ListScreenUiState
 	data class Error(val message: String?): ListScreenUiState
 }

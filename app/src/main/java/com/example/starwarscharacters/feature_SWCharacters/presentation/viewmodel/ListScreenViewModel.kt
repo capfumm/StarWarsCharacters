@@ -1,5 +1,6 @@
 package com.example.starwarscharacters.feature_SWCharacters.presentation.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starwarscharacters.feature_SWCharacters.domain.repository.CharacterRepository
@@ -12,12 +13,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class ListViewModel(private val repository: CharacterRepository) : ViewModel() {
+class ListScreenViewModel @Inject constructor(
+	private val repository: CharacterRepository,
+) : ViewModel() {
 
 	private val _isRefreshing = MutableStateFlow(false)
 	private val _error = MutableStateFlow<String?>(null)
+
 
 	val uiState: StateFlow<ListScreenUiState> =
 		combine(
@@ -27,8 +32,8 @@ class ListViewModel(private val repository: CharacterRepository) : ViewModel() {
 		) { characters, isRefreshing, error ->
 			val state: ListScreenUiState = when {
 				error != null -> ListScreenUiState.Error(error)
-				characters.isEmpty() && !isRefreshing -> ListScreenUiState.Empty(message = "No data")
-				else -> ListScreenUiState.Success(items = characters, isRefreshing = false)
+				characters.isEmpty() && !isRefreshing -> ListScreenUiState.Empty
+				else -> ListScreenUiState.Success(items = characters, isRefreshing = isRefreshing)
 			}
 			state
 		}
