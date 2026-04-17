@@ -18,7 +18,7 @@ fun CharacterEntity.toDomain(): Character {
 		mass = mass?.toIntOrNull(),
 		hair = hair.removeUnknownOrNull(),
 		eyes = eyes.removeUnknownOrNull(),
-		birthYear = birthYear.removeUnknownOrNull(),
+		birthYear = birthYear.removeUnknownOrNull().lowercase(),
 		gender = gender.removeUnknownOrNull()
 	)
 }

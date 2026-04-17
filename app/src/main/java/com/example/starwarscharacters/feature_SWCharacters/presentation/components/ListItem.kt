@@ -1,12 +1,14 @@
-package com.example.starwarscharacters.feature_SWCharacters.presentation.screens
+package com.example.starwarscharacters.feature_SWCharacters.presentation.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,13 +21,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.starwarscharacters.R
+import com.example.starwarscharacters.core.ui.theme.StarWarsCharactersTheme
 import com.example.starwarscharacters.feature_SWCharacters.domain.model.Character
+import com.example.starwarscharacters.feature_SWCharacters.presentation.components.text_decor.BodyText
+import com.example.starwarscharacters.feature_SWCharacters.presentation.components.text_decor.TitleText
 
 @Composable
 fun ListItem(
@@ -33,14 +36,21 @@ fun ListItem(
 	onItemClick: () -> Unit,
 	isItemFocused: Boolean,
 	onCharacterClick: (Long) -> Unit,
+	isLandscape: Boolean,
 	modifier: Modifier = Modifier,
 ) {
+
+	val borderColor = if (isItemFocused) Color.White else Color.Unspecified
+
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
 		modifier = modifier
 			.width(220.dp)
-			.height(500.dp)
-			.border(width = 1.dp, color = Color.Blue, shape = RoundedCornerShape(12.dp))
+			.height(if(isLandscape) 300.dp else 450.dp)
+			.clip(RoundedCornerShape(24.dp)) // Закругляем углы
+			.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)) // Делаем чуть прозрачным
+			.border(1.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(24.dp)) // Еле заметная рамка
+			.padding(16.dp)
 			.clickable {
 				if (isItemFocused) {
 					onCharacterClick(character.id)
@@ -55,7 +65,6 @@ fun ListItem(
 				model = character.avatarUrl,
 				contentDescription = null,
 				modifier = modifier
-					.size(300.dp)
 					.weight(0.6f)
 					.clip(RoundedCornerShape(12.dp)),
 				contentScale = ContentScale.Crop
@@ -64,19 +73,13 @@ fun ListItem(
 			Image(painter = painterResource(R.drawable.noavatar), contentDescription = null)
 		}
 		Column(
-			modifier = Modifier.weight(0.4f),
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
-			Text(
-				character.name,
-				maxLines = 1,
-				textAlign = TextAlign.Center,
-				style = MaterialTheme.typography.titleLarge
-			)
-			Text(text = "Height: ${character.height?.let { "$it cm" } ?: "n/a"}")
-			Text(text = "Mass: ${character.mass?.let { "$it kg" } ?: "n/a"}")
-			Text(text = "Hair: ${character.hair}")
-			Text(text = "Eyes: ${character.eyes}")
+			TitleText(character.name)
+			TitleText(text = "Height: ${character.height?.let { "$it cm" } ?: "n/a"}")
+			TitleText(text = "Mass: ${character.mass?.let { "$it kg" } ?: "n/a"}")
+			TitleText(text = "Hair: ${character.hair}")
+			TitleText(text = "Eyes: ${character.eyes}")
 		}
 	}
 }

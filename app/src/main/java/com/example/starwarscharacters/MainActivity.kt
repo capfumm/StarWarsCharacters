@@ -58,7 +58,10 @@ fun StarWarsNavigation() {
 		) {
 			val viewModel: CharacterDetailViewModel = hiltViewModel()
 			// На этом экране мы будем получать данные из ViewModel
-			CharacterDetailScreen(viewModel = viewModel)
+			CharacterDetailScreen(
+				viewModel = viewModel,
+				onBackClick = { navController.popBackStack() }
+			)
 		}
 	}
 }

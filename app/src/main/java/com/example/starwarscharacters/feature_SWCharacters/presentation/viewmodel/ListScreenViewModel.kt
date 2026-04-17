@@ -1,6 +1,5 @@
 package com.example.starwarscharacters.feature_SWCharacters.presentation.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starwarscharacters.feature_SWCharacters.domain.repository.CharacterRepository
@@ -10,6 +9,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -23,24 +23,34 @@ class ListScreenViewModel @Inject constructor(
 	private val _isRefreshing = MutableStateFlow(false)
 	private val _error = MutableStateFlow<String?>(null)
 
+	private val _searchQuery = MutableStateFlow("")
+	val searchQuery = _searchQuery.asStateFlow()
 
 	val uiState: StateFlow<ListScreenUiState> =
 		combine(
 			repository.getAllCharacters(),
 			_isRefreshing,
-			_error
-		) { characters, isRefreshing, error ->
-			val state: ListScreenUiState = when {
-				error != null -> ListScreenUiState.Error(error)
-				characters.isEmpty() && !isRefreshing -> ListScreenUiState.Empty
-				else -> ListScreenUiState.Success(items = characters, isRefreshing = isRefreshing)
+			_error,
+			_searchQuery
+		) { characters, refreshing, error, query ->
+
+			val filteredItems = if (query.isBlank()){
+				characters
+			} else {
+				characters.filter { it.name.contains(query, ignoreCase = true) }
 			}
-			state
+
+			ListScreenUiState(
+				items = filteredItems,
+				isRefreshing = refreshing,
+				error = error,
+				isLoading = refreshing && characters.isEmpty()
+			)
 		}
 			.stateIn(
 				scope = viewModelScope,
 				started = SharingStarted.WhileSubscribed(5000),
-				initialValue = ListScreenUiState.Loading
+				initialValue = ListScreenUiState(isLoading = true)
 			)
 
 	init {
@@ -51,8 +61,13 @@ class ListScreenViewModel @Inject constructor(
 		sync()
 	}
 
+	fun clearError() {
+		_error.value = null
+	}
+
 	private fun sync() {
 		viewModelScope.launch {
+			_error.value = null
 			_isRefreshing.value = true
 			try {
 				repository.syncCharacters() // Room сам толкнет новые данные в Flow
@@ -64,5 +79,9 @@ class ListScreenViewModel @Inject constructor(
 				_isRefreshing.value = false
 			}
 		}
+	}
+
+	fun onSearchQueryChange(query: String) {
+		_searchQuery.value = query
 	}
 }
