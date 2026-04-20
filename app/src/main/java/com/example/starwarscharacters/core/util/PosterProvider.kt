@@ -10,9 +10,5 @@ object PosterProvider {
 		"6" to "https://static.wikia.nocookie.net/starwars/images/b/b2/ReturnOfTheJediPoster1983.jpg/revision/latest?cb=20250617080341"
 	)
 
-	val backgroundPosters = listOf(
-		"https://starwars.fandom.com/wiki/Star_Wars?file=Star-wars-logo-new-tall.jpg"
-	)
-
 	fun getUrl(episodeId: String?): String? = filmPosters[episodeId]
 }

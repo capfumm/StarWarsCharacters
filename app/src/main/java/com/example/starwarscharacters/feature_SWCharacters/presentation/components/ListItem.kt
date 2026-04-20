@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,14 +43,15 @@ fun ListItem(
 
 	val borderColor = if (isItemFocused) Color.White else Color.Unspecified
 
+
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
 		modifier = modifier
 			.width(220.dp)
-			.height(if(isLandscape) 300.dp else 450.dp)
+			.height(if (isLandscape) 300.dp else 450.dp)
 			.clip(RoundedCornerShape(24.dp)) // Закругляем углы
 			.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)) // Делаем чуть прозрачным
-			.border(1.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(24.dp)) // Еле заметная рамка
+			.border(1.dp, color = borderColor, RoundedCornerShape(24.dp)) // Еле заметная рамка
 			.padding(16.dp)
 			.clickable {
 				if (isItemFocused) {
@@ -75,11 +77,13 @@ fun ListItem(
 		Column(
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
-			TitleText(character.name)
-			TitleText(text = "Height: ${character.height?.let { "$it cm" } ?: "n/a"}")
-			TitleText(text = "Mass: ${character.mass?.let { "$it kg" } ?: "n/a"}")
-			TitleText(text = "Hair: ${character.hair}")
-			TitleText(text = "Eyes: ${character.eyes}")
+			TitleText(character.name, textAlign = TextAlign.Center)
+			Column(){
+				TitleText(text = "Height: ${character.height?.let { "$it cm" } ?: "n/a"}")
+				TitleText(text = "Mass: ${character.mass?.let { "$it kg" } ?: "n/a"}")
+				TitleText(text = "Hair: ${character.hair}")
+				TitleText(text = "Eyes: ${character.eyes}")
+			}
 		}
 	}
 }

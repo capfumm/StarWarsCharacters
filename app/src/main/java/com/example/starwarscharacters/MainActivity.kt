@@ -47,20 +47,19 @@ fun StarWarsNavigation() {
 				viewModel = viewModel,
 				onCharacterClick = { characterId ->
 					navController.navigate(Screen.CharacterDetail.passId(characterId))
-				}
+				},
 			)
 		}
 
-		// Экран деталей персонажа
 		composable(
 			route = Screen.CharacterDetail.route,
 			arguments = listOf(navArgument("characterId") { type = NavType.LongType })
 		) {
 			val viewModel: CharacterDetailViewModel = hiltViewModel()
-			// На этом экране мы будем получать данные из ViewModel
+
 			CharacterDetailScreen(
 				viewModel = viewModel,
-				onBackClick = { navController.popBackStack() }
+				onBackClick = { navController.popBackStack() },
 			)
 		}
 	}
